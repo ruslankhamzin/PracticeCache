@@ -1,4 +1,4 @@
-package org.example.models;
+package org.example.cache.models;
 
 import java.time.LocalDateTime;
 import java.util.Random;
