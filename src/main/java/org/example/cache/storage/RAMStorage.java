@@ -1,12 +1,14 @@
 package org.example.cache.storage;
 
 
+import org.example.cache.Cache;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class RAMStorage<T, V> implements CacheStrategy<T, V> {
-    private final HashMap<Object, Object> values;
-    private final HashMap<Object, Integer> countOfUse;
+    private final HashMap<T, V> values;
+    private final HashMap<T, Integer> countOfUse;
 
     public RAMStorage() {
         values = new HashMap<>();
@@ -16,6 +18,9 @@ public class RAMStorage<T, V> implements CacheStrategy<T, V> {
 
     @Override
     public void put(T key, V value) {
+        if(Cache.getSize()==values.size()){
+            pruning();
+        }
         values.put(key, value);
         countOfUse.put(key, 1);
     }
@@ -31,8 +36,8 @@ public class RAMStorage<T, V> implements CacheStrategy<T, V> {
 
     @Override
     public void pruning() {
-        Map.Entry<Object, Integer> min = null;
-        for (Map.Entry<Object, Integer> e : countOfUse.entrySet()) {
+        Map.Entry<T, Integer> min = null;
+        for (Map.Entry<T, Integer> e : countOfUse.entrySet()) {
             int frequency = e.getValue();
             if (min == null || min.getValue() >= frequency) {
                 min = e;
