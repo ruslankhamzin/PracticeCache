@@ -18,7 +18,7 @@ public class RAMStorage<T, V> implements CacheStrategy<T, V> {
 
     @Override
     public void put(T key, V value) {
-        if(Cache.getSize()==values.size()){
+        if (Cache.getSize() == values.size()) {
             pruning();
         }
         values.put(key, value);

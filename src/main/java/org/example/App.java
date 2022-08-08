@@ -5,6 +5,6 @@ import org.example.cache.storage.RAMStorage;
 
 public class App {
     public static void main(String[] args) {
-        Cache<Integer,String> cache = new Cache<>(new RAMStorage<>());
+        Cache<Integer, String> cache = new Cache<>(new RAMStorage<>());
     }
 }
