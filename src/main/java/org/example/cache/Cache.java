@@ -1,38 +1,41 @@
 package org.example.cache;
 
-import org.example.cache.storage.CacheStrategy;
+import org.example.cache.storage.DiskStorage;
+import org.example.cache.storage.RAMStorage;
+import org.example.cache.storage.Storage;
+import org.example.cache.storage.StorageStrategy;
 
 
 public class Cache<T, V> {
-    private static int size;
-    private final CacheStrategy<T, V> cacheStrategy;
 
-    public Cache(CacheStrategy<T, V> cacheStrategy) {
-        this.cacheStrategy = cacheStrategy;
-        size = 2;
+    private StorageStrategy<T, V> storageStrategy;
+
+    public Cache(Storage storage, int size) {
+        switch (storage) {
+            case Disk:
+                storageStrategy = new DiskStorage<>(size);
+                break;
+            case Memory:
+                storageStrategy = new RAMStorage<>(size);
+                break;
+        }
+
+
     }
 
-    public Cache(CacheStrategy<T, V> cacheStrategy, int size) {
-        Cache.size = size;
-        this.cacheStrategy = cacheStrategy;
-    }
-
-    public static int getSize() {
-        return size;
-    }
 
     public void put(T key, V value) {
-        cacheStrategy.put(key, value);
+        storageStrategy.put(key, value);
     }
 
 
     public Object get(T key) {
-        return cacheStrategy.get(key);
+        return storageStrategy.get(key);
 
     }
 
     public void clear() {
-        cacheStrategy.clear();
+        storageStrategy.clear();
     }
 
 }

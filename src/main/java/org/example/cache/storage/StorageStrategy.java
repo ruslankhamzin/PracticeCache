@@ -1,10 +1,10 @@
 package org.example.cache.storage;
 
-public interface CacheStrategy<T, V> {
+public interface StorageStrategy<T, V> {
 
     void put(T key, V value);
 
-    Object get(T key);
+    V get(T key);
 
     void pruning();
 

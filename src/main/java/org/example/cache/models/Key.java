@@ -1,18 +1,17 @@
 package org.example.cache.models;
 
+import java.rmi.server.UID;
 import java.time.LocalDateTime;
-import java.util.Random;
 
-public class Key {
-    String title;
-    LocalDateTime dateOfCreated;
-    Long id;
+public final class Key {
+    private final String title;
+    private final LocalDateTime dateOfCreated;
+    private final UID id;
 
-    public Key(String title) {
+    public Key(String title, LocalDateTime dateOfCreated, UID id) {
         this.title = title;
-        dateOfCreated = LocalDateTime.now();
-        Random random = new Random();
-        id = random.nextLong();
+        this.dateOfCreated = dateOfCreated;
+        this.id = id;
     }
 
     @Override
