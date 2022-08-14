@@ -6,7 +6,5 @@ public interface StorageStrategy<T, V> {
 
     V get(T key);
 
-    void pruning();
-
     void clear();
 }

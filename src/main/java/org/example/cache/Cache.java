@@ -2,7 +2,7 @@ package org.example.cache;
 
 import org.example.cache.storage.DiskStorage;
 import org.example.cache.storage.RAMStorage;
-import org.example.cache.storage.Storage;
+import org.example.cache.storage.StorageType;
 import org.example.cache.storage.StorageStrategy;
 
 
@@ -10,12 +10,12 @@ public class Cache<T, V> {
 
     private StorageStrategy<T, V> storageStrategy;
 
-    public Cache(Storage storage, int size) {
-        switch (storage) {
-            case Disk:
+    public Cache(StorageType storageType, int size) {
+        switch (storageType) {
+            case DISK:
                 storageStrategy = new DiskStorage<>(size);
                 break;
-            case Memory:
+            case MEMORY:
                 storageStrategy = new RAMStorage<>(size);
                 break;
         }

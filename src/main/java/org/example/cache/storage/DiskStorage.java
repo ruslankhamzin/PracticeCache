@@ -5,7 +5,7 @@ import java.io.*;
 import java.util.Objects;
 
 public class DiskStorage<T, V> implements StorageStrategy<T, V> {
-    private final String directory = "C:\\Users\\79199\\Downloads\\PracticeCache\\cachefiles\\";
+    private final String directory = "cacheFiles\\";
     private final int size;
 
     public DiskStorage(int size) {
@@ -14,7 +14,7 @@ public class DiskStorage<T, V> implements StorageStrategy<T, V> {
 
     @Override
     public void put(T key, V value) {
-        while (size <= Objects.requireNonNull(new File(directory).listFiles()).length) {
+        while (size <= (new File(directory).listFiles()).length) {
             pruning();
         }
         try (FileOutputStream fos = new FileOutputStream(directory + key + ".txt"); ObjectOutputStream oos = new ObjectOutputStream(fos)) {
@@ -47,22 +47,30 @@ public class DiskStorage<T, V> implements StorageStrategy<T, V> {
         return value;
     }
 
-    @Override
-    public void pruning() {
-        File minLastModified = (Objects.requireNonNull(new File(directory).listFiles())[0]);
-        for (File myFile : Objects.requireNonNull(new File(directory).listFiles())) {
-            if (myFile.lastModified() < minLastModified.lastModified()) {
-                minLastModified = myFile;
-            }
-        }
-        minLastModified.delete();
 
+    private void pruning() {
+        try {
+            File minLastModified = ((new File(directory).listFiles())[0]);
+            for (File myFile : Objects.requireNonNull(new File(directory).listFiles())) {
+                if (myFile.lastModified() < minLastModified.lastModified()) {
+                    minLastModified = myFile;
+                }
+            }
+            minLastModified.delete();
+        } catch (NullPointerException e) {
+            System.out.println("Ошибка при получении файлов.");
+        }
     }
 
 
     @Override
     public void clear() {
-        for (File myFile : Objects.requireNonNull(new File(directory).listFiles()))
-            if (myFile.isFile()) myFile.delete();
+        try {
+            for (File myFile : new File(directory).listFiles()) {
+                if (myFile.isFile()) myFile.delete();
+            }
+        } catch (NullPointerException e) {
+            System.out.println("Ошибка при получении файлов.");
+        }
     }
 }

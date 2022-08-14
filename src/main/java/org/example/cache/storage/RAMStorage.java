@@ -17,9 +17,7 @@ public class RAMStorage<T, V> implements StorageStrategy<T, V> {
 
     @Override
     public void put(T key, V value) {
-        if (size == values.size()) {
-            pruning();
-        }
+        while (size <= values.size()) pruning();
         values.put(key, value);
     }
 
@@ -33,8 +31,7 @@ public class RAMStorage<T, V> implements StorageStrategy<T, V> {
     }
 
 
-    @Override
-    public void pruning() {
+    private void pruning() {
         List<T> keys = new ArrayList<>(values.keySet());
         values.remove(keys.get(0));
     }
