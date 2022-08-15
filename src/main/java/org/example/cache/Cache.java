@@ -2,8 +2,8 @@ package org.example.cache;
 
 import org.example.cache.storage.DiskStorage;
 import org.example.cache.storage.RAMStorage;
-import org.example.cache.storage.StorageType;
 import org.example.cache.storage.StorageStrategy;
+import org.example.cache.storage.StorageType;
 
 
 public class Cache<T, V> {
