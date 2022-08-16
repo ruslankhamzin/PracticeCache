@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class RAMStorage<T, V> implements StorageStrategy<T, V> {
     private final int size;
-    public LinkedHashMap<T, V> values;
+    private final LinkedHashMap<T, V> values;
 
     public RAMStorage(int size) {
         this.size = size;
