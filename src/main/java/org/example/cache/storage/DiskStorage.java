@@ -1,76 +1,67 @@
 package org.example.cache.storage;
 
 
+import org.example.cache.exceptions.FileException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
-import java.util.Objects;
+
 
 public class DiskStorage<T, V> implements StorageStrategy<T, V> {
-    private final String directory = "cacheFiles\\";
+    private static final String DIRECTORY = "cacheFiles\\";
+    private static final String FILETYPE = ".txt";
+    private static final Logger LOGGER = LoggerFactory.getLogger(DiskStorage.class);
     private final int size;
+    private final File cacheFiles;
 
     public DiskStorage(int size) {
+        cacheFiles = new File(DIRECTORY);
         this.size = size;
     }
 
     @Override
-    public void put(T key, V value) {
-        while (size <= (new File(directory).listFiles()).length) {
-            pruning();
-        }
-        try (FileOutputStream fos = new FileOutputStream(directory + key + ".txt"); ObjectOutputStream oos = new ObjectOutputStream(fos)) {
-            oos.writeObject(value);
-
+    public void put(T key, V value) throws FileException {
+        while (size <= cacheFiles.listFiles().length) pruning();
+        try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(DIRECTORY + key + FILETYPE)))) {
+            objectOutputStream.writeObject(value);
         } catch (IOException e) {
-            System.out.println("Ошибка записи в файл");
+            LOGGER.error("Error in class DiskStorage, method put. Error is related to write object to file");
+            throw new FileException("Could not write object to " + key + FILETYPE + " in " + DIRECTORY);
         }
-
     }
 
     @Override
-    public V get(T key) {
-        V value = null;
-        try (FileInputStream fis = new FileInputStream(directory + key + ".txt"); ObjectInputStream ois = new ObjectInputStream(fis)) {
-            value = (V) ois.readObject();
+    public V get(T key) throws FileException {
+        V value;
+        try (ObjectInputStream objectInputStream = new ObjectInputStream(new BufferedInputStream(new FileInputStream(DIRECTORY + key + FILETYPE)))) {
+            value = (V) objectInputStream.readObject();
         } catch (IOException | ClassNotFoundException e) {
-            System.out.println("Ошибка при получении данных");
+            LOGGER.error("Error in class DiskStorage, method get. Error is related to get object from file");
+            throw new FileException("Could not read object from " + key + FILETYPE + " in " + DIRECTORY);
         }
-        File file = new File(directory + key + ".txt");
+        File file = new File(DIRECTORY + key + FILETYPE);
         if (file.isFile()) {
             file.delete();
         }
-        try (FileOutputStream fos = new FileOutputStream(directory + key + ".txt"); ObjectOutputStream oos = new ObjectOutputStream(fos)) {
-            oos.writeObject(value);
-
-        } catch (IOException e) {
-            System.out.println("Ошибка при перезаписи файла");
-        }
+        this.put(key, value);
         return value;
     }
 
-
     private void pruning() {
-        try {
-            File minLastModified = ((new File(directory).listFiles())[0]);
-            for (File myFile : Objects.requireNonNull(new File(directory).listFiles())) {
-                if (myFile.lastModified() < minLastModified.lastModified()) {
-                    minLastModified = myFile;
-                }
+        File minLastModified = (cacheFiles.listFiles())[0];
+        for (File myFile : cacheFiles.listFiles()) {
+            if (myFile.lastModified() < minLastModified.lastModified()) {
+                minLastModified = myFile;
             }
-            minLastModified.delete();
-        } catch (NullPointerException e) {
-            System.out.println("Ошибка при получении файлов.");
         }
+        minLastModified.delete();
     }
-
 
     @Override
     public void clear() {
-        try {
-            for (File myFile : new File(directory).listFiles()) {
-                if (myFile.isFile()) myFile.delete();
-            }
-        } catch (NullPointerException e) {
-            System.out.println("Ошибка при получении файлов.");
+        for (File myFile : cacheFiles.listFiles()) {
+            if (myFile.isFile()) myFile.delete();
         }
     }
 }

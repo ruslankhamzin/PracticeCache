@@ -1,30 +1,19 @@
 package org.example.cache.models;
 
-import java.rmi.server.UID;
+
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.UUID;
 
 public final class Key {
     private final String title;
     private final LocalDateTime dateOfCreated;
-    private final UID id;
+    private final UUID id;
 
-    public Key(String title, LocalDateTime dateOfCreated, UID id) {
+    public Key(String title, LocalDateTime dateOfCreated, UUID id) {
         this.title = title;
         this.dateOfCreated = dateOfCreated;
         this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public LocalDateTime getDateOfCreated() {
-        return dateOfCreated;
-    }
-
-    public UID getId() {
-        return id;
     }
 
     @Override
