@@ -5,11 +5,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class RAMStorage<T, V> implements StorageStrategy<T, V> {
-    private final int size;
     private final LinkedHashMap<T, V> values;
 
     public RAMStorage(int size) {
-        this.size = size;
         values = new LinkedHashMap<T, V>(size) {
             @Override
             protected boolean removeEldestEntry(Map.Entry eldest) {
@@ -30,11 +28,6 @@ public class RAMStorage<T, V> implements StorageStrategy<T, V> {
         values.put(key, value);
         return value;
     }
-
-    /*private void pruning() {
-        List<T> keys = new ArrayList<>(values.keySet());
-        values.remove(keys.get(0));
-    }*/
 
     @Override
     public void clear() {
