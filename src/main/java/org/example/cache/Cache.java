@@ -1,6 +1,6 @@
 package org.example.cache;
 
-import org.example.cache.exceptions.FileException;
+import org.example.cache.exceptions.FileAccessException;
 import org.example.cache.storage.DiskStorage;
 import org.example.cache.storage.RAMStorage;
 import org.example.cache.storage.StorageStrategy;
@@ -20,11 +20,11 @@ public class Cache<T, V> {
         }
     }
 
-    public void put(T key, V value) throws FileException {
+    public void put(T key, V value) throws FileAccessException {
         storageStrategy.put(key, value);
     }
 
-    public Object get(T key) throws FileException {
+    public Object get(T key) throws FileAccessException {
         return storageStrategy.get(key);
 
     }

@@ -1,12 +1,14 @@
 package org.example.cache.storage;
 
 
-import org.example.cache.exceptions.FileException;
+import org.example.cache.exceptions.FileAccessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 
 public class DiskStorage<T, V> implements StorageStrategy<T, V> {
     private static final String DIRECTORY = "cacheFiles\\";
@@ -21,41 +23,41 @@ public class DiskStorage<T, V> implements StorageStrategy<T, V> {
     }
 
     @Override
-    public void put(T key, V value) throws FileException {
-        while (size <= cacheFiles.listFiles().length) pruning();
+    public void put(T key, V value) throws FileAccessException {
+        if (size == cacheFiles.listFiles().length) pruning();
         try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(DIRECTORY + key + FILETYPE)))) {
             objectOutputStream.writeObject(value);
+            LOGGER.info("the file was successfully written. Key: " + key + "Value: " + value);
         } catch (IOException e) {
             LOGGER.error("Error in class DiskStorage, method put. Error is related to write object to file");
-            throw new FileException("Could not write object to " + key + FILETYPE + " in " + DIRECTORY);
+            throw new FileAccessException("Could not write object to " + key + FILETYPE + " in " + DIRECTORY);
         }
     }
 
     @Override
-    public V get(T key) throws FileException {
+    public V get(T key) throws FileAccessException {
         V value;
         try (ObjectInputStream objectInputStream = new ObjectInputStream(new BufferedInputStream(new FileInputStream(DIRECTORY + key + FILETYPE)))) {
             value = (V) objectInputStream.readObject();
+            File file = new File(DIRECTORY + key + FILETYPE);
+            if (file.exists()) {
+                file.setLastModified(System.currentTimeMillis());
+            }
+            LOGGER.info("the file was successfully received");
         } catch (IOException | ClassNotFoundException e) {
-            LOGGER.error("Error in class DiskStorage, method get. Error is related to get object from file");
-            throw new FileException("Could not read object from " + key + FILETYPE + " in " + DIRECTORY);
+            LOGGER.error("Error in class DiskStorage, method get. Error is related to get object from file or file not exists");
+            throw new FileAccessException("Could not read object from " + key + FILETYPE + " in " + DIRECTORY);
         }
-        File file = new File(DIRECTORY + key + FILETYPE);
-        if (file.isFile()) {
-            file.delete();
-        }
-        this.put(key, value);
         return value;
     }
 
     private void pruning() {
-        File minLastModified = (cacheFiles.listFiles())[0];
-        for (File myFile : cacheFiles.listFiles()) {
-            if (myFile.lastModified() < minLastModified.lastModified()) {
-                minLastModified = myFile;
-            }
-        }
+        List<File> listWithFiles = Arrays.asList(cacheFiles.listFiles().clone());
+        Comparator<File> fileComparator = Comparator.comparing(File::lastModified);
+        listWithFiles.sort(fileComparator);
+        File minLastModified = listWithFiles.get(0);
         minLastModified.delete();
+        LOGGER.info("the file was deleted following the LRU strategy");
     }
 
     @Override
@@ -63,5 +65,6 @@ public class DiskStorage<T, V> implements StorageStrategy<T, V> {
         for (File myFile : cacheFiles.listFiles()) {
             if (myFile.isFile()) myFile.delete();
         }
+        LOGGER.info("The cache has been cleared");
     }
 }
