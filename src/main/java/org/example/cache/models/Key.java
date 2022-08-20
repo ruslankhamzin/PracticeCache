@@ -36,5 +36,4 @@ public final class Key implements Serializable {
     public String toString() {
         return title + dateOfCreated + id;
     }
-
 }
