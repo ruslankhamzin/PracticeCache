@@ -23,7 +23,7 @@ public class DiskStorageTest {
     }
 
     @Test
-    public void testGet() throws FileAccessException {
+    public void testGetMethod() throws FileAccessException {
         Cache<String, Integer> cache = new Cache<>(StorageType.DISK, 2);
 
         cache.put("Second", 2);
@@ -34,7 +34,7 @@ public class DiskStorageTest {
     }
 
     @Test(expected = FileAccessException.class)
-    public void testClear() throws FileAccessException {
+    public void testClearMethod() throws FileAccessException {
         Cache<String, Integer> cache = new Cache<>(StorageType.DISK, 2);
 
         cache.put("First", 1);
@@ -46,7 +46,7 @@ public class DiskStorageTest {
     }
 
     @Test(expected = FileAccessException.class)
-    public void testStrategy() throws FileAccessException {
+    public void testLRUStrategy() throws FileAccessException {
         Cache<String, Integer> cache = new Cache<>(StorageType.DISK, 2);
 
         cache.put("First", 1);
