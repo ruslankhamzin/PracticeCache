@@ -1,11 +1,12 @@
 package org.example.cache.models;
 
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
-public final class Key {
+public final class Key implements Serializable {
     private final String title;
     private final LocalDateTime dateOfCreated;
     private final UUID id;
@@ -33,10 +34,7 @@ public final class Key {
 
     @Override
     public String toString() {
-        return "Key{" +
-                "title='" + title + '\'' +
-                ", dateOfCreated=" + dateOfCreated +
-                ", id=" + id +
-                '}';
+        return title + dateOfCreated + id;
     }
+
 }

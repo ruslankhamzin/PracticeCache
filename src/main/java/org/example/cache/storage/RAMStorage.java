@@ -12,7 +12,7 @@ public class RAMStorage<T, V> implements StorageStrategy<T, V> {
     private final LinkedHashMap<T, V> values;
 
     public RAMStorage(int size) {
-        values = new LinkedHashMap<T, V>(size,.75f,true) {
+        values = new LinkedHashMap<T, V>(size, .75f, true) {
             @Override
             protected boolean removeEldestEntry(Map.Entry eldest) {
                 LOGGER.info("Remove element following the LRU strategy");
