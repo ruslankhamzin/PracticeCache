@@ -42,7 +42,7 @@ public class DiskStorageTest {
         cache.put("Third", 3);
         cache.clear();
 
-        assertEquals(3, cache.get("Third"));
+        cache.get("Third");
     }
 
     @Test(expected = FileAccessException.class)
