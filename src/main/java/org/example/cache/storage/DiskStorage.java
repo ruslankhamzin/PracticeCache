@@ -58,7 +58,7 @@ public class DiskStorage<T, V> implements StorageStrategy<T, V> {
 
     private void pruning() {
         if (cacheFiles.exists() && cacheFiles.listFiles() != null && size <= cacheFiles.listFiles().length) {
-            List<File> listWithFiles = Arrays.asList(cacheFiles.listFiles().clone());
+            List<File> listWithFiles = Arrays.asList(cacheFiles.listFiles());
             listWithFiles.sort(((o1, o2) -> Long.compare(o2.lastModified(), o1.lastModified())));
             for (int i = size - 1; i < listWithFiles.size(); i++) {
                 File minLastModified = listWithFiles.get(i);

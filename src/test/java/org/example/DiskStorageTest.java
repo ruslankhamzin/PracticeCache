@@ -10,7 +10,7 @@ import static org.junit.Assert.assertEquals;
 public class DiskStorageTest {
 
     @Test(expected = FileAccessException.class)
-    public void testGetWithException() throws FileAccessException {
+    public void testGetMethodWithException() throws FileAccessException {
         Cache<String, Integer> cache = new Cache<>(StorageType.DISK, 2);
 
         cache.put("First", 1);
