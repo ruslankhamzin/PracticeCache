@@ -41,6 +41,7 @@ public class KeyTest {
         UUID uuid = UUID.randomUUID();
 
         Key key1 = new Key(title, localDateTime, uuid);
+
         assertEquals(title + localDateTime + uuid, key1.toString());
     }
 }
