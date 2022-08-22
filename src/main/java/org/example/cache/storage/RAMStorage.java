@@ -15,7 +15,7 @@ public class RAMStorage<T, V> implements StorageStrategy<T, V> {
         values = new LinkedHashMap<T, V>(size, .75f, true) {
             @Override
             protected boolean removeEldestEntry(Map.Entry eldest) {
-                LOGGER.info("Remove element following the LRU strategy");
+                LOGGER.info("Remove element following the LRU strategy. ");
                 return size < values.size();
             }
         };
@@ -24,7 +24,7 @@ public class RAMStorage<T, V> implements StorageStrategy<T, V> {
     @Override
     public void put(T key, V value) {
         values.put(key, value);
-        LOGGER.info("The element was successfully save in cache. Key: " + key + "Value: " + value);
+        LOGGER.info("The element was successfully save in cache. Key: " + key + " Value: " + value);
     }
 
     @Override
@@ -35,6 +35,6 @@ public class RAMStorage<T, V> implements StorageStrategy<T, V> {
     @Override
     public void clear() {
         values.clear();
-        LOGGER.info("The cache has been cleared");
+        LOGGER.info("The cache has been cleared. ");
     }
 }
