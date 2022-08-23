@@ -56,6 +56,14 @@ public class DiskStorage<T, V> implements StorageStrategy<T, V> {
         }
     }
 
+    @Override
+    public void clear() {
+        if (cacheFiles.listFiles() != null) {
+            for (File cacheFile : cacheFiles.listFiles()) removeFile(cacheFile);
+            LOGGER.info("The cache has been cleared. ");
+        }
+    }
+
     private void removeFile(File fileToDelete) {
         if (fileToDelete.isFile()) {
             fileToDelete.delete();
@@ -72,16 +80,6 @@ public class DiskStorage<T, V> implements StorageStrategy<T, V> {
                 removeFile(minLastModified);
             }
             LOGGER.info("the files was deleted following the LRU strategy. ");
-        }
-    }
-
-    @Override
-    public void clear() {
-        if (cacheFiles.listFiles() != null) {
-            for (File cacheFile : cacheFiles.listFiles()) {
-                removeFile(cacheFile);
-            }
-            LOGGER.info("The cache has been cleared. ");
         }
     }
 }
