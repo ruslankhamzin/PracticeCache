@@ -24,13 +24,7 @@ public class DiskStorage<T, V> implements StorageStrategy<T, V> {
     @Override
     public void put(T key, V value) throws FileAccessException {
         pruning();
-        try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(DIRECTORY + key + FILETYPE)))) {
-            objectOutputStream.writeObject(value);
-            LOGGER.info("the file was successfully written. Key: " + key + " Value: " + value);
-        } catch (IOException e) {
-            LOGGER.error("Error in class DiskStorage, method put. Error is related to write object to file. ");
-            throw new FileAccessException("Could not write object to " + key + FILETYPE + " in " + DIRECTORY);
-        }
+        putFileOnDisk(key, value);
     }
 
     @Override
@@ -54,6 +48,16 @@ public class DiskStorage<T, V> implements StorageStrategy<T, V> {
         if (cacheFiles.listFiles() != null) {
             for (File cacheFile : cacheFiles.listFiles()) removeFile(cacheFile);
             LOGGER.info("The cache has been cleared. ");
+        }
+    }
+
+    private void putFileOnDisk(T key, V value) throws FileAccessException {
+        try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(DIRECTORY + key + FILETYPE)))) {
+            objectOutputStream.writeObject(value);
+            LOGGER.info("the file was successfully written. Key: " + key + " Value: " + value);
+        } catch (IOException e) {
+            LOGGER.error("Error in class DiskStorage, method put. Error is related to write object to file. ");
+            throw new FileAccessException("Could not write object to " + key + FILETYPE + " in " + DIRECTORY);
         }
     }
 

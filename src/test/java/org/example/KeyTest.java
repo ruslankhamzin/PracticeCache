@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 public class KeyTest {
 
@@ -23,6 +24,14 @@ public class KeyTest {
         Key key2 = new Key(title, localDateTime, uuid);
 
         assertEquals(key1, key2);
+    }
+
+    @Test
+    public void testNotEqualsMethod() {
+        Key key1 = new Key("My Key", LocalDateTime.now(), UUID.randomUUID());
+        Key key2 = new Key("My Key", LocalDateTime.now(), UUID.randomUUID());
+
+        assertNotEquals(key1,key2);
     }
 
     @Test
@@ -64,6 +73,14 @@ public class KeyTest {
         Key key2 = new Key(title, localDateTime, uuid);
 
         assertEquals(key1.hashCode(), key2.hashCode());
+    }
+
+    @Test
+    public void testNotHashCodeMethod(){
+        Key key1 = new Key("My Key", LocalDateTime.now(), UUID.randomUUID());
+        Key key2 = new Key("My Key", LocalDateTime.now(), UUID.randomUUID());
+
+        assertNotEquals(key1.hashCode(),key2.hashCode());
     }
 
     @Test
