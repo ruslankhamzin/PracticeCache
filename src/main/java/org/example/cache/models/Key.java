@@ -34,6 +34,6 @@ public final class Key implements Serializable {
 
     @Override
     public String toString() {
-        return title + dateOfCreated + id;
+        return title + " " + id;
     }
 }
