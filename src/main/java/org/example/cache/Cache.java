@@ -9,7 +9,7 @@ import org.example.cache.storage.StorageType;
 public class Cache<T, V> {
     private StorageStrategy<T, V> storageStrategy;
 
-    public Cache(StorageType storageType, int size) {
+    public Cache(final StorageType storageType, final int size) {
         switch (storageType) {
             case DISK:
                 storageStrategy = new DiskStorage<>(size);
@@ -20,11 +20,11 @@ public class Cache<T, V> {
         }
     }
 
-    public void put(T key, V value) throws FileAccessException {
+    public void put(final T key, final V value) throws FileAccessException {
         storageStrategy.put(key, value);
     }
 
-    public Object get(T key) throws FileAccessException {
+    public Object get(final T key) throws FileAccessException {
         return storageStrategy.get(key);
 
     }

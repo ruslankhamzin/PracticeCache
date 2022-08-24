@@ -5,7 +5,14 @@ import org.example.cache.exceptions.FileAccessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.List;
 
@@ -16,19 +23,19 @@ public class DiskStorage<T, V> implements StorageStrategy<T, V> {
     private final int size;
     private final File cacheFiles;
 
-    public DiskStorage(int size) {
+    public DiskStorage(final int size) {
         cacheFiles = new File(DIRECTORY);
         this.size = size;
     }
 
     @Override
-    public void put(T key, V value) throws FileAccessException {
+    public void put(final T key, final V value) throws FileAccessException {
         pruning();
         putFileOnDisk(key, value);
     }
 
     @Override
-    public V get(T key) throws FileAccessException {
+    public V get(final T key) throws FileAccessException {
         try (ObjectInputStream objectInputStream = new ObjectInputStream(new BufferedInputStream(new FileInputStream(DIRECTORY + key + FILETYPE)))) {
             V value = (V) objectInputStream.readObject();
             File fileWithValue = new File(DIRECTORY + key + FILETYPE);
@@ -46,13 +53,15 @@ public class DiskStorage<T, V> implements StorageStrategy<T, V> {
     @Override
     public void clear() {
         if (cacheFiles.listFiles() != null) {
-            for (File cacheFile : cacheFiles.listFiles()) removeFile(cacheFile);
+            for (File cacheFile : cacheFiles.listFiles()) {
+                removeFile(cacheFile);
+            }
             LOGGER.info("The cache has been cleared. ");
         }
     }
 
-    private void putFileOnDisk(T key, V value) throws FileAccessException {
-        try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(DIRECTORY + key + FILETYPE)))) {
+    private void putFileOnDisk(final T key, final V value) throws FileAccessException {
+        try (ObjectOutputStream objectOutputStream = new ObjectOutputStream( new BufferedOutputStream( new FileOutputStream(DIRECTORY + key + FILETYPE)))) {
             objectOutputStream.writeObject(value);
             LOGGER.info("the file was successfully written. Key: " + key + " Value: " + value);
         } catch (IOException e) {
@@ -61,7 +70,7 @@ public class DiskStorage<T, V> implements StorageStrategy<T, V> {
         }
     }
 
-    private void removeFile(File fileToDelete) {
+    private void removeFile(final File fileToDelete) {
         if (fileToDelete.isFile()) {
             fileToDelete.delete();
             LOGGER.info(fileToDelete.getName() + " was deleted.");
