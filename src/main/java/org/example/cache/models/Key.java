@@ -1,6 +1,5 @@
 package org.example.cache.models;
 
-
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -26,9 +25,9 @@ public final class Key implements Serializable {
             return false;
         }
         Key key = (Key) o;
-        return Objects.equals(title, key.title) &&
-                Objects.equals(dateOfCreated, key.dateOfCreated) &&
-                Objects.equals(id, key.id);
+        return Objects.equals(title, key.title)
+                && Objects.equals(dateOfCreated, key.dateOfCreated)
+                && Objects.equals(id, key.id);
     }
 
     @Override

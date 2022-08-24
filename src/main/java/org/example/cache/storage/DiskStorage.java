@@ -1,6 +1,5 @@
 package org.example.cache.storage;
 
-
 import org.example.cache.exceptions.FileAccessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,8 +19,8 @@ public class DiskStorage<T, V> implements StorageStrategy<T, V> {
     private static final String DIRECTORY = "cacheFiles\\";
     private static final String FILETYPE = ".txt";
     private static final Logger LOGGER = LoggerFactory.getLogger(DiskStorage.class);
-    private final int size;
     private final File cacheFiles;
+    private final int size;
 
     public DiskStorage(final int size) {
         cacheFiles = new File(DIRECTORY);
@@ -32,6 +31,35 @@ public class DiskStorage<T, V> implements StorageStrategy<T, V> {
     public void put(final T key, final V value) throws FileAccessException {
         pruning();
         putFileOnDisk(key, value);
+    }
+
+    private void pruning() {
+        if (cacheFiles.listFiles() != null) {
+            List<File> listWithFiles = Arrays.asList(cacheFiles.listFiles());
+            listWithFiles.sort(((o1, o2) -> Long.compare(o2.lastModified(), o1.lastModified())));
+            for (int i = size - 1; i < listWithFiles.size(); i++) {
+                File minLastModified = listWithFiles.get(i);
+                removeFile(minLastModified);
+            }
+            LOGGER.info("the files was deleted following the LRU strategy. ");
+        }
+    }
+
+    private void removeFile(final File fileToDelete) {
+        if (fileToDelete.isFile()) {
+            fileToDelete.delete();
+            LOGGER.info(fileToDelete.getName() + " was deleted.");
+        }
+    }
+
+    private void putFileOnDisk(final T key, final V value) throws FileAccessException {
+        try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(DIRECTORY + key + FILETYPE)))) {
+            objectOutputStream.writeObject(value);
+            LOGGER.info("the file was successfully written. Key: " + key + " Value: " + value);
+        } catch (IOException e) {
+            LOGGER.error("Error in class DiskStorage, method put. Error is related to write object to file. ");
+            throw new FileAccessException("Could not write object to " + key + FILETYPE + " in " + DIRECTORY);
+        }
     }
 
     @Override
@@ -57,35 +85,6 @@ public class DiskStorage<T, V> implements StorageStrategy<T, V> {
                 removeFile(cacheFile);
             }
             LOGGER.info("The cache has been cleared. ");
-        }
-    }
-
-    private void putFileOnDisk(final T key, final V value) throws FileAccessException {
-        try (ObjectOutputStream objectOutputStream = new ObjectOutputStream( new BufferedOutputStream( new FileOutputStream(DIRECTORY + key + FILETYPE)))) {
-            objectOutputStream.writeObject(value);
-            LOGGER.info("the file was successfully written. Key: " + key + " Value: " + value);
-        } catch (IOException e) {
-            LOGGER.error("Error in class DiskStorage, method put. Error is related to write object to file. ");
-            throw new FileAccessException("Could not write object to " + key + FILETYPE + " in " + DIRECTORY);
-        }
-    }
-
-    private void removeFile(final File fileToDelete) {
-        if (fileToDelete.isFile()) {
-            fileToDelete.delete();
-            LOGGER.info(fileToDelete.getName() + " was deleted.");
-        }
-    }
-
-    private void pruning() {
-        if (cacheFiles.listFiles() != null) {
-            List<File> listWithFiles = Arrays.asList(cacheFiles.listFiles());
-            listWithFiles.sort(((o1, o2) -> Long.compare(o2.lastModified(), o1.lastModified())));
-            for (int i = size - 1; i < listWithFiles.size(); i++) {
-                File minLastModified = listWithFiles.get(i);
-                removeFile(minLastModified);
-            }
-            LOGGER.info("the files was deleted following the LRU strategy. ");
         }
     }
 }

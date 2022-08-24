@@ -7,16 +7,13 @@ import org.example.cache.storage.StorageStrategy;
 import org.example.cache.storage.StorageType;
 
 public class Cache<T, V> {
-    private StorageStrategy<T, V> storageStrategy;
+    private final StorageStrategy<T, V> storageStrategy;
 
     public Cache(final StorageType storageType, final int size) {
-        switch (storageType) {
-            case DISK:
-                storageStrategy = new DiskStorage<>(size);
-                break;
-            case MEMORY:
-                storageStrategy = new RAMStorage<>(size);
-                break;
+        if (storageType == StorageType.DISK) {
+            storageStrategy = new DiskStorage<>(size);
+        } else {
+            storageStrategy = new RAMStorage<>(size);
         }
     }
 
