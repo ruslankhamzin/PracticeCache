@@ -10,14 +10,14 @@ public final class Key implements Serializable {
     private final LocalDateTime dateOfCreated;
     private final UUID id;
 
-    public Key(final String title, final LocalDateTime dateOfCreated, final UUID id) {
+    public Key(String title, LocalDateTime dateOfCreated, UUID id) {
         this.title = title;
         this.dateOfCreated = dateOfCreated;
         this.id = id;
     }
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
